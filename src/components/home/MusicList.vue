@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import { getMusicList } from '@/request/api/home';
-import { onMounted, reactive } from 'vue';
+import { getMusicList } from '@/request/api/home'
+import { onMounted, reactive } from 'vue'
 export default {
     name: 'MusicList',
     setup() {
