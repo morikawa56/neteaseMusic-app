@@ -10,6 +10,6 @@ export function getBanner() {
 export function getMusicList() {
     return service({
         method: 'GET',
-        url: '/personalized?limit=3'
+        url: '/personalized?limit=10'
     })
 }

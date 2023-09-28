@@ -15,4 +15,7 @@
     fill: currentColor;
     overflow: hidden;
   }
+  a {
+    color: black;
+  }
 </style>

@@ -5,17 +5,32 @@
         <div class="more">查看更多</div>
     </div>
     <div class="mList">
-        <div class="musicItem" v-for="item in listData.musicList" :key="item">
-            <img :src="item.picUrl">
-            <span>{{ item.name }}</span>
-        </div>
+        <van-swipe 
+            :loop="false" 
+            :width="150" 
+            class="my-swpie" 
+            :show-indicators="false"
+        >
+            <van-swipe-item v-for="item in listData.musicList" :key="item.id">
+                <RouterLink :to="{path: '/itemmusic', query:{id: item.id}}">
+                <img :src="item.picUrl" />
+                <span class="playCount">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-mknetemsc24gl-play"></use>
+                    </svg>
+                    <span> {{ changeCount(item.playCount) }}</span>
+                </span>
+                <span class="name">{{ item.name }}</span>
+                </RouterLink>
+            </van-swipe-item>
+        </van-swipe>
     </div>
   </div>
 </template>
 
 <script>
 import { getMusicList } from '@/request/api/home'
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, computed } from 'vue'
 export default {
     name: 'MusicList',
     setup() {
@@ -25,9 +40,19 @@ export default {
         onMounted(async ()=>{
             let res = await getMusicList()
             listData.musicList = res.data.result
-            console.log(listData.musicList)
         })
-        return {listData}
+
+        const changeCount = num => {
+            if(num >= 100000000) {
+                return (num/100000000).toFixed(1) + '亿'
+            } else if (num >= 10000) {
+                return (num/10000).toFixed(1) + '万'
+            } else {
+                return num
+            }
+        }
+
+        return {listData, changeCount}
     }
 }
 </script>
@@ -35,7 +60,7 @@ export default {
 <style lang="less" scoped>
     .musicList {
         width: 100%;
-        height: 5rem;
+        height: 5.5rem;
         padding: 0.2rem;
         .musicTop {
             width: 100%;
@@ -57,12 +82,30 @@ export default {
         }
         .mList{
             width: 100%;
-            height: 4rem;
-            display: flex;
-            justify-content: space-around;
-            .musicItem {
-                img {
-                    width: 100%;
+            height: 4.5rem;
+            .my-swpie {
+                height: 100%;
+                .van-swipe-item {
+                    padding-right: 0.2rem;
+                    position: relative;
+                    img {
+                        width: 100%;
+                        height: 3rem;
+                        border-radius: 0.3rem;
+                    }
+                    .playCount{
+                        position: absolute;
+                        right: .3rem;
+                        color: #fff;
+                        margin-top: 0.06rem;
+                        .icon {
+                            width: .3rem;
+                            height: .3rem;
+                            margin-right: 0.05rem;
+                            fill: none;
+                            fill: #fff;
+                        }
+                    }
                 }
             }
         }

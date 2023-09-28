@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { getBanner } from '@/request/api/home'
 import { onMounted, reactive } from 'vue'
 export default {
