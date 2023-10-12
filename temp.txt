@@ -46,3 +46,64 @@ export default {
   },
 };
 </script>
+
+
+
+
+
+
+
+
+
+<template>
+  <div>
+    <p>Playing: {{ playing }}</p>
+    <button @click="togglePlay">Toggle Play</button>
+    <audio ref="audio" :src="playlist[currentIndex]"></audio>
+  </div>
+</template>
+
+<script>
+import { reactive, watch } from 'vue';
+import { useStore } from 'vuex';
+
+export default {
+  setup() {
+    const store = useStore();
+    const playlist = reactive(store.state.playlist); // 通过reactive()函数获取响应式数据
+    const playing = ref(false); // false表示停止播放，true表示开始播放
+    const audio = ref(null); // 通过ref获取audio元素
+    const currentIndex = ref(0); // 当前播放的索引
+
+    // 定义playAudio方法来控制audio的播放和暂停
+    const playAudio = () => {
+      if (audio.value) {
+        audio.value.play();
+      } else {
+        console.warn('No audio element available to play');
+      }
+    };
+
+    // 使用watch监视playing属性的变化并立即调用playAudio()方法
+    watch(playing, () => {
+      playAudio();
+    });
+
+    // 点击按钮时切换playing属性的值并刷新audio元素的播放状态
+    const togglePlay = () => {
+      playing.value = !playing.value;
+      store.commit('setPlaying', playing.value); // 将playing属性的修改映射到store中的playing属性上
+      currentIndex.value = (currentIndex.value + 1) % playlist.value.length; // 更新当前播放的索引
+      playAudio();
+    };
+
+    return {
+      playlist,
+      audio,
+      playing,
+      currentIndex,
+      togglePlay,
+    };
+  },
+};
+</script>
