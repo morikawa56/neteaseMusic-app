@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="FooterPlayer-right">
-            <svg class="icon" aria-hidden="true" @click="handlePlay" ref="playBtn">
+            <svg class="icon" aria-hidden="true" @click="togglePlay" ref="playBtn">
                 <use xlink:href="#icon-mknetemscyunhang"></use>
             </svg>
             <svg class="icon" aria-hidden="true" @click="handleList">
@@ -20,42 +20,62 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
-import { mapState } from 'vuex'
+import { computed, onMounted, onUpdated, ref, watch } from 'vue'
+import { mapState, useStore } from 'vuex'
 export default {
     name: 'FooterPlayer',
     setup() {
+        const store = useStore();
         const audio = ref(null)
         const playBtn = ref(null)
+        const playing = computed(() => store.state.playing)
+        const playListIndex = ref(0)
         onMounted(() =>{
             // console.log(audio.value)
             // console.log(playBtn.value.innerHTML)
+            // console.log(store.state)
+            // console.log(playing)
         })
+
+        watch(playing, () => {
+            handlePlay()
+        })
+
+        function handlePlay() {
+            // 判断音乐是否播放
+            if(!playing.value) {
+                console.log(2)
+                playBtn.value.innerHTML = '<use xlink:href="#icon-mknetemscyunhang"></use>'
+                audio.value.pause()
+            } else {
+                console.log(1)
+                playBtn.value.innerHTML = '<use xlink:href="#icon-mknetemscbofangzhong"></use>'
+                audio.value.pause()
+                audio.value.play()
+            }
+            // console.log(audio.value.src)
+        }
+        function togglePlay() {
+            store.commit('setPlaying', !playing.value)
+            handlePlay()
+        }
+
         return {
             audio,
-            playBtn
+            playBtn,
+            store,
+            playing,
+            handlePlay,
+            togglePlay
         }
     },
     methods: {
-        handlePlay() {
-            // 判断音乐是否播放
-            if(this.playing) {
-                this.$store.commit('setPlaying', false)
-                this.$refs.audio.pause()
-                this.$refs.playBtn.innerHTML = '<use xlink:href="#icon-mknetemscyunhang"></use>'
-            } else {
-                this.$store.commit('setPlaying', true)
-                this.audio.play()
-                this.playBtn.innerHTML = '<use xlink:href="#icon-mknetemscbofangzhong"></use>'
-            }
-            console.log(this.audio.src)
-        },
         handleList() {
             console.log('handleList')
         }
     },
     computed: {
-        ...mapState(['playList', 'playListIndex', 'playing'])
+        ...mapState(['playList', 'playListIndex'])
     },
 }
 </script>
