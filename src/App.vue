@@ -1,6 +1,16 @@
 <template>
   <router-view/>
+   <FooterPlayer/>
 </template>
+
+<script>
+  import FooterPlayer from './components/item/FooterPlayer.vue';
+  export default {
+    components: {
+      FooterPlayer
+    }
+  }
+</script>
 
 <style lang="less">
   *{

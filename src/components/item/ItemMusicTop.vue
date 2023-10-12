@@ -36,11 +36,13 @@
                         <use xlink:href="#icon-mknetemscyoujiantou"></use>
                     </svg>
                 </div>
-                <div class="description">
+                <div class="description" v-if="playlist.description">
                     <div>{{ playlist.description }}</div>
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-mknetemscyoujiantou"></use>
                     </svg>
+                </div>
+                <div class="description-null" v-if="!playlist.description">
                 </div>
             </div>
         </div>
@@ -181,8 +183,8 @@ export default {
                 align-items: center;
                 margin: .3rem 0;
                 img {
-                    width: .7rem;
-                    height: .7rem;
+                    width: .6rem;
+                    height: .6rem;
                     border-radius: 50%;
                 }
                 div {
@@ -199,6 +201,7 @@ export default {
                 }
             }
             .description {
+                width: 100%;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -215,6 +218,10 @@ export default {
                     width: .3rem;
                     fill: #e3e3e3;
                 }
+            }
+            .description-null {
+                width: 100%;
+                height: .8rem;
             }
         }
     }

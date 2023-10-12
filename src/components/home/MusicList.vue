@@ -102,7 +102,6 @@ export default {
                             width: .3rem;
                             height: .3rem;
                             margin-right: 0.05rem;
-                            fill: none;
                             fill: #fff;
                         }
                     }
