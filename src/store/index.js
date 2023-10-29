@@ -21,11 +21,11 @@ export default createStore({
   mutations: {
     setPlaying(state, isPlaying) {
       state.playing = isPlaying
-      console.log(state.playing)
+      console.log(state.playing, '--', 'index.setplaying')
     },
     updatePlayList(state, playList) {
       state.playList = playList
-      console.log(state.playList)
+      console.log(state.playList, '--', 'index.updatePlayList')
     },
     updatePlayIndex(state, index) {
       state.playListIndex = index

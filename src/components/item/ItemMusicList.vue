@@ -74,11 +74,9 @@ import { onMounted, reactive } from 'vue'
             })
             function playMusic(Index) {
                 store.commit('setPlaying', false)
-                setTimeout(()=>{
                     store.commit('updatePlayList', props.songs)
                     store.commit('updatePlayIndex', Index)
                     store.commit('setPlaying', true)
-                },100)
             }
             return { changeCount, playMusic, playListData }
         },

@@ -37,18 +37,19 @@ export default {
             // console.log(playing)
         })
 
-        watch(playing, () => {
+        watch(audio, (newValue, oldValue) => {
             handlePlay()
+            console.log('audio的值变化了', newValue, oldValue)
         })
 
         function handlePlay() {
             // 判断音乐是否播放
             if(!playing.value) {
-                console.log(2)
+                // console.log(2)
                 playBtn.value.innerHTML = '<use xlink:href="#icon-mknetemscyunhang"></use>'
                 audio.value.pause()
             } else {
-                console.log(1)
+                // console.log(1)
                 playBtn.value.innerHTML = '<use xlink:href="#icon-mknetemscbofangzhong"></use>'
                 audio.value.pause()
                 audio.value.play()
