@@ -37,24 +37,32 @@ export default {
             // console.log(playing)
         })
 
-        watch(audio, (newValue, oldValue) => {
-            handlePlay()
-            console.log('audio的值变化了', newValue, oldValue)
-        })
+
+        // watch(audio, (newValue, oldValue) => {
+        //     handlePlay()
+        //     console.log('audio的值变化了', newValue, oldValue)
+        // })
+        function handleBtn(status) {
+            if(status) {
+                playBtn.value.innerHTML = '<use xlink:href="#icon-mknetemscbofangzhong"></use>'
+            } else {
+                playBtn.value.innerHTML = '<use xlink:href="#icon-mknetemscyunhang"></use>'
+            }
+        }
 
         function handlePlay() {
             // 判断音乐是否播放
             if(!playing.value) {
                 // console.log(2)
-                playBtn.value.innerHTML = '<use xlink:href="#icon-mknetemscyunhang"></use>'
+                handleBtn(false)
                 audio.value.pause()
             } else {
                 // console.log(1)
-                playBtn.value.innerHTML = '<use xlink:href="#icon-mknetemscbofangzhong"></use>'
+                handleBtn(true)
                 audio.value.pause()
                 audio.value.play()
             }
-            // console.log(audio.value.src)
+            console.log(audio.value.src)
         }
         function togglePlay() {
             store.commit('setPlaying', !playing.value)
@@ -67,12 +75,20 @@ export default {
             store,
             playing,
             handlePlay,
+            handleBtn,
             togglePlay
         }
     },
     methods: {
         handleList() {
             console.log('handleList')
+        }
+    },
+    watch: {
+        playListIndex(newValue, oldValue) {
+            console.log('playListIndex变化了', newValue, oldValue)
+            this.$refs.audio.autoplay = true
+            this.handleBtn(this.playing)
         }
     },
     computed: {

@@ -29,6 +29,7 @@ export default createStore({
     },
     updatePlayIndex(state, index) {
       state.playListIndex = index
+      console.log(state.playListIndex, '--', 'updatePlayIndex')
     },
   },
   actions: {
