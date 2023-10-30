@@ -57,7 +57,6 @@ import { onMounted, reactive } from 'vue'
         setup(props) {
             const store = useStore()
             // console.log(props)
-            let playListData = reactive({})
             const changeCount = num => {
                 if(num >= 100000000) {
                     return (num/100000000).toFixed(1) + '亿'
@@ -67,18 +66,13 @@ import { onMounted, reactive } from 'vue'
                     return num
                 }
             }
-            onMounted(() => {
-                setTimeout(()=>{
-                    playListData = JSON.parse(JSON.stringify(props.songs))
-                },10)
-            })
+            
             function playMusic(Index) {
-                store.commit('setPlaying', false)
                 store.commit('updatePlayList', props.songs)
                 store.commit('updatePlayIndex', Index)
                 store.commit('setPlaying', true)
             }
-            return { changeCount, playMusic, playListData }
+            return { changeCount, playMusic }
         },
         props: ['songs', 'playlist']
     }
