@@ -45,6 +45,7 @@ export default createStore({
       console.log(state.playing, '--', 'index.setplaying')
     },
     updatePlayList(state, playList) {
+      sessionStorage.setItem('lastMusicId', JSON.stringify(state.playList[state.playListIndex].id))
       state.playList = playList
       console.log(state.playList, '--', 'index.updatePlayList')
     },

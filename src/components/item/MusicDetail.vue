@@ -71,6 +71,7 @@
                     width: 0.5rem;
                     height: 0.5rem;
                     margin: 0 .2rem;
+                    fill: #999;
                 }
                 .titleInfo {
                     width: 100%;
@@ -82,7 +83,7 @@
                         width: 100%;
                         height: 60%;
                         font-size: .4rem;
-                        margin: .2rem 0;
+                        margin-top: .2rem;
                     }
                     .singerInfo{
                         width: 100%;
@@ -90,6 +91,7 @@
                         display: flex;
                         justify-content: flex-start;
                         align-items: center;
+                        margin-top: .1rem;
                         margin-bottom: .2rem;
                         span{
                             font-size: 0.28rem;
@@ -99,6 +101,7 @@
                         .icon {
                             width: 0.28rem;
                             height: 0.28rem;
+                            fill: #999;
                         }
                     }
                 }
