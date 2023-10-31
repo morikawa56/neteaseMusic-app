@@ -16,7 +16,11 @@
                     <use xlink:href="#icon-mknetemscbofangliebiao"></use>
                 </svg>
             </div>
-            <audio ref="audio" :src="`https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id}.mp3`"></audio>
+            <audio 
+                ref="audio" 
+                :src="`https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id}.mp3`"
+                @canplay="ready"
+            ></audio>
             <van-popup
                 v-model:show="musicDetailShow"
                 position="bottom"
@@ -39,6 +43,7 @@ export default {
         const audio = ref(null)
         const playBtn = ref(null)
         const playing = computed(() => store.state.playing)
+        const audioReady = ref(false)
         onMounted(() =>{
             // console.log(audio.value)
             // console.log(playBtn.value.innerHTML)
@@ -82,6 +87,10 @@ export default {
             store.commit('setMusicDetailShow')
         }
 
+        function ready() {
+            audioReady.value = true
+        }
+
         return {
             audio,
             playBtn,
@@ -90,7 +99,9 @@ export default {
             handlePlay,
             handleBtn,
             togglePlay,
-            showDetail
+            showDetail,
+            audioReady,
+            ready
         }
     },
     methods: {
@@ -101,16 +112,24 @@ export default {
     watch: {
         playListIndex(newValue, oldValue) {
             // console.log('playListIndex变化了', newValue, oldValue)
+            if(!this.audioReady){
+				return
+			}
             this.$refs.audio.autoplay = true
             this.$refs.audio.play()
-            console.log(this.$refs.audio.paused)
+            console.log(this.audioReady)
             this.handleBtn(this.playing)
+            this.audioReady = false
         },
         playList(newValue, oldValue) {
+            if(!this.audioReady){
+				return
+			}
             this.$refs.audio.autoplay = true
             this.$refs.audio.play()
-            console.log(this.$refs.audio.paused)
+            console.log(this.audioReady)
             this.handleBtn(this.playing)
+            this.audioReady = false
         }
     },
     computed: {
