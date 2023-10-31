@@ -1,28 +1,30 @@
 <template>
-    <div class="FooterPlayer">
-        <div class="FooterPlayer-left" @click="showDetail">
-            <img :src="playList[playListIndex].al.picUrl" alt="">
-            <div>
-                <p>{{ playList[playListIndex].name }}</p>
-                <span>横滑可以切换上下首哦</span>
+    <div class="content">
+        <div class="FooterPlayer">
+            <div class="FooterPlayer-left" @click="showDetail">
+                <img :src="playList[playListIndex].al.picUrl" alt="">
+                <div>
+                    <p>{{ playList[playListIndex].name }}</p>
+                    <span>横滑可以切换上下首哦</span>
+                </div>
             </div>
+            <div class="FooterPlayer-right">
+                <svg class="icon" aria-hidden="true" @click="togglePlay" ref="playBtn">
+                    <use xlink:href="#icon-mknetemscyunhang"></use>
+                </svg>
+                <svg class="icon" aria-hidden="true" @click="handleList">
+                    <use xlink:href="#icon-mknetemscbofangliebiao"></use>
+                </svg>
+            </div>
+            <audio ref="audio" :src="`https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id}.mp3`"></audio>
+            <van-popup
+                v-model:show="musicDetailShow"
+                position="bottom"
+                :style="{ width: '100%', height: '100%' }"
+            >
+                <MusicDetail :playing="playList[playListIndex]"/>
+            </van-popup>
         </div>
-        <div class="FooterPlayer-right">
-            <svg class="icon" aria-hidden="true" @click="togglePlay" ref="playBtn">
-                <use xlink:href="#icon-mknetemscyunhang"></use>
-            </svg>
-            <svg class="icon" aria-hidden="true" @click="handleList">
-                <use xlink:href="#icon-mknetemscbofangliebiao"></use>
-            </svg>
-        </div>
-        <audio ref="audio" :src="`https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id}.mp3`"></audio>
-        <van-popup
-            v-model:show="musicDetailShow"
-            position="bottom"
-            :style="{ width: '100%', height: '100%' }"
-        >
-            <MusicDetail :playing="playList[playListIndex]"/>
-        </van-popup>
     </div>
 </template>
 
@@ -119,6 +121,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+    .content {width: 100%;height: 1.4rem;} // 外层包裹div占位防止遮挡后方歌单内容
     .FooterPlayer {
         width: 100%;
         height: 1.4rem;

@@ -165,6 +165,10 @@ import { onMounted, reactive } from 'vue'
                         .musicTitle {
                             font-size: .32rem;
                             font-weight: bold;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 1;
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
                         }
                         .singerInfo {
                             font-size: .28rem;
