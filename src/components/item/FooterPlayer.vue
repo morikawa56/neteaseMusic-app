@@ -1,6 +1,6 @@
 <template>
     <div class="FooterPlayer">
-        <div class="FooterPlayer-left">
+        <div class="FooterPlayer-left" @click="showDetail">
             <img :src="playList[playListIndex].al.picUrl" alt="">
             <div>
                 <p>{{ playList[playListIndex].name }}</p>
@@ -16,12 +16,20 @@
             </svg>
         </div>
         <audio ref="audio" :src="`https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id}.mp3`"></audio>
+        <van-popup
+            v-model:show="musicDetailShow"
+            position="bottom"
+            :style="{ width: '100%', height: '100%' }"
+        >
+            <MusicDetail :playing="playList[playListIndex]"/>
+        </van-popup>
     </div>
 </template>
 
 <script>
-import { computed, onMounted, onUpdated, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { mapState, useStore } from 'vuex'
+import MusicDetail from '@/components/item/MusicDetail.vue'
 export default {
     name: 'FooterPlayer',
     setup() {
@@ -29,7 +37,6 @@ export default {
         const audio = ref(null)
         const playBtn = ref(null)
         const playing = computed(() => store.state.playing)
-        const playListIndex = ref(0)
         onMounted(() =>{
             // console.log(audio.value)
             // console.log(playBtn.value.innerHTML)
@@ -69,6 +76,10 @@ export default {
             handlePlay()
         }
 
+        function showDetail() {
+            store.commit('setMusicDetailShow')
+        }
+
         return {
             audio,
             playBtn,
@@ -76,7 +87,8 @@ export default {
             playing,
             handlePlay,
             handleBtn,
-            togglePlay
+            togglePlay,
+            showDetail
         }
     },
     methods: {
@@ -86,14 +98,23 @@ export default {
     },
     watch: {
         playListIndex(newValue, oldValue) {
-            console.log('playListIndex变化了', newValue, oldValue)
+            // console.log('playListIndex变化了', newValue, oldValue)
             this.$refs.audio.autoplay = true
+            this.$refs.audio.play()
+            console.log(this.$refs.audio.paused)
+            this.handleBtn(this.playing)
+        },
+        playList(newValue, oldValue) {
+            this.$refs.audio.autoplay = true
+            this.$refs.audio.play()
+            console.log(this.$refs.audio.paused)
             this.handleBtn(this.playing)
         }
     },
     computed: {
-        ...mapState(['playList', 'playListIndex'])
+        ...mapState(['playList', 'playListIndex', 'musicDetailShow'])
     },
+    components: { MusicDetail }
 }
 </script>
 
