@@ -68,6 +68,7 @@ import { onMounted, reactive } from 'vue'
             }
             
             function playMusic(Index) {
+                store.commit('sessionPut')
                 store.commit('updatePlayList', props.songs)
                 store.commit('updatePlayIndex', Index)
                 store.commit('setPlaying', true)

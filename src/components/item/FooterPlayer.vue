@@ -111,6 +111,7 @@ export default {
                 this.$refs.audio.autoplay = true
             }
             this.handleBtn(this.playing)
+            sessionStorage.removeItem('lastMusicId')
         },
         playList() {
             if(this.playList[this.playListIndex].id === Number(sessionStorage.getItem('lastMusicId'))) {
@@ -119,6 +120,7 @@ export default {
                 this.$refs.audio.autoplay = true
             }
             this.handleBtn(this.playing)
+            sessionStorage.removeItem('lastMusicId')
         }
     },
     computed: {

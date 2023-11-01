@@ -42,20 +42,18 @@ export default createStore({
   mutations: {
     setPlaying(state, isPlaying) {
       state.playing = isPlaying
-      console.log(state.playing, '--', 'index.setplaying')
+    },
+    sessionPut(state) {
+      sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
     },
     updatePlayList(state, playList) {
-      sessionStorage.setItem('lastMusicId', JSON.stringify(state.playList[state.playListIndex].id))
       state.playList = playList
-      console.log(state.playList, '--', 'index.updatePlayList')
     },
     updatePlayIndex(state, index) {
       state.playListIndex = index
-      console.log(state.playListIndex, '--', 'updatePlayIndex')
     },
     setMusicDetailShow(state) {
       state.musicDetailShow = !state.musicDetailShow
-      console.log(state.musicDetailShow, '--', 'index.setMusicDetailShow')
     }
   },
   actions: {
