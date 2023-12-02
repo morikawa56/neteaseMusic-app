@@ -15,12 +15,12 @@ export function changeTitleColor(bgimg, musicTitle, bacCover) {
     let grayValue = Grayer(...colorthief.getColor(bgimg))
     let colorValue = rgbToHex(...colorthief.getColor(bgimg))
     if(grayValue >= 127 && grayValue <= 255) {
-        musicTitle.style.color = "#000"
-        musicTitle.style.fill = "#000"
+        musicTitle.style.color = "#000000cf"
+        musicTitle.style.fill = "#000000cf"
         bacCover.style.backgroundColor = colorValue + '4d'
     } else if (grayValue >= 0 && grayValue < 127) {
-        musicTitle.style.color = "#fff"
-        musicTitle.style.fill = "#fff"
+        musicTitle.style.color = "#ffffffcf"
+        musicTitle.style.fill = "#ffffffcf"
         bacCover.style.backgroundColor = colorValue + '4d'
     }
 }

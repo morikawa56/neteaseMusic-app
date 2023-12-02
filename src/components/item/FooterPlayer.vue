@@ -26,7 +26,7 @@
                 position="bottom"
                 :style="{ width: '100%', height: '100%' }"
             >
-                <MusicDetail :playing="playList[playListIndex]"/>
+                <MusicDetail :playing="playList[playListIndex]" :playStatus="playing"/>
             </van-popup>
         </div>
     </div>

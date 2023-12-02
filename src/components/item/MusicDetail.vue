@@ -36,9 +36,22 @@
                     <use xlink:href="#icon-mknetemscfenxiang"></use>
                 </svg>
             </div>
-            <div class="alInfo">
-                
-            </div>
+        </div>
+        <div class="alInfo">
+            <img
+                src="@/assets/needle-ab.png"
+                alt=""
+                class="img_needle"
+                :class="{ img_needle_active: !playStatus }"
+            />
+            <img src="@/assets/cd.png" alt="" class="img_cd" />
+            <img
+                :src="playing.al.picUrl"
+                alt=""
+                class="img_al"
+                @click="isLyricShow = true"
+                :class="{ img_al_active: playStatus, img_al_pauesd: !playStatus }"
+            />
         </div>
     </div>
 </template>
@@ -59,11 +72,13 @@
             onMounted(() => {
                 console.log('Mounted')
                 changeTheme(props.playing.al.picUrl, musicTitle.value, bacCover.value)
+                console.log(props.playStatus)
             })
 
             onUpdated(() => {
                 console.log('Updated')
                 changeTheme(props.playing.al.picUrl, musicTitle.value, bacCover.value)
+                console.log(props.playStatus)
             })
             function showDetail() {
                 store.commit('setMusicDetailShow')
@@ -71,7 +86,7 @@
 
             return { showDetail, musicTitle, bacCover, songName }
         },
-        props: [ 'playing' ],
+        props: [ 'playing', 'playStatus' ],
         computed: {
             showTitleMarquee() {
                 return this.playing.name.length > 10
@@ -99,7 +114,7 @@
             width: 100%;
             height: 100%;
             position: fixed;
-            background-color: rgba(255, 255, 255, 0.3);
+            background-color: #ffffff4d;
             z-index: -1;
             // filter: blur(.6rem);
         }
@@ -155,6 +170,7 @@
                         .icon {
                             width: 0.28rem;
                             height: 0.28rem;
+                            margin: 0;
                             // fill: #999;
                         }
                     }
@@ -169,10 +185,67 @@
                 .icon{
                     width: 0.6rem;
                     height: 0.6rem;
-                    margin-right: 0.2rem;
+                    margin: 0 .2rem 0 0;
+                }
+            }
+        }
+        .alInfo {
+            width: 100%;
+            height: 11rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            .img_needle {
+                width: 2rem;
+                z-index: 2;
+                position: absolute;
+                left: 46%;
+                bottom: 5.6rem;
+                transform-origin: 0 0;
+                transform: rotate(0deg);
+                transition: all 1.5s;
+            }
+            .img_needle_active {
+                width: 2rem;
+                z-index: 2;
+                position: absolute;
+                left: 46%;
+                bottom: 5.6rem;
+                transform-origin: 0 0;
+                transform: rotate(-13deg);
+                transition: all 1.5s;
+            }
+            .img_cd {
+                width: 5rem;
+                height: 5rem;
+                z-index: 1;
+                position: absolute;
+                bottom: 2rem;
+            }
+            .img_al {
+                width: 3.5rem;
+                height: 3.5rem;
+                border-radius: 50%;
+                z-index: 0;
+                position: absolute;
+                bottom: 2.7rem;
+                animation: rotate_ar 10s linear infinite;
+            }
+            .img_al_active {
+                animation-play-state: running;
+            }
+            .img_al_pauesd {
+                animation-play-state: paused;
+            }
+            @keyframes rotate_ar {
+                0% {
+                    transform: rotateZ(0deg);
+                }
+                100% {
+                    transform: rotateZ(360deg);
                 }
             }
         }
     }
-    
 </style>
