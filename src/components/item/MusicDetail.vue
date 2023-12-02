@@ -8,11 +8,23 @@
                     <use xlink:href="#icon-mknetemsczuojiantou"></use>
                 </svg>
                 <div class="titleInfo" ref="titleInfo">
-                    <p>{{ playing.name }}</p>
+                    <Vue3Marquee class="songName" v-if="showTitleMarquee">
+                        <p>{{ playing.name }}</p>
+                    </Vue3Marquee>
+                    <div class="songName" v-else>
+                        <p>{{ playing.name }}</p>
+                    </div>
                     <div class="singerInfo">
-                        <span v-for="singer in playing.ar" :key="singer">
-                            {{ singer.name }}
-                        </span>
+                        <Vue3Marquee class="singerList" v-if="showSingerMarquee">
+                            <span v-for="singer in playing.ar" :key="singer">
+                                {{ singer.name }}
+                            </span>
+                        </Vue3Marquee>
+                        <div class="singerList" v-else>
+                            <span v-for="singer in playing.ar" :key="singer">
+                                {{ singer.name }}
+                            </span>
+                        </div>
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#icon-mknetemscyoujiantou"></use>
                         </svg>
@@ -24,13 +36,17 @@
                     <use xlink:href="#icon-mknetemscfenxiang"></use>
                 </svg>
             </div>
+            <div class="alInfo">
+                
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-    import { onActivated, onMounted, onUpdated, ref } from 'vue'
+    import { onMounted, onUpdated, ref } from 'vue'
     import { useStore } from 'vuex'
+    import { Vue3Marquee } from 'vue3-marquee'
     import { changeTheme }  from '@/utils/colorthief'
     export default {
         name: 'MusicDetail',
@@ -38,6 +54,7 @@
             const store = useStore();
             let musicTitle = ref(null)
             let bacCover = ref(null)
+            let songName = ref(null)
 
             onMounted(() => {
                 console.log('Mounted')
@@ -52,9 +69,20 @@
                 store.commit('setMusicDetailShow')
             }
 
-            return { showDetail, musicTitle, bacCover}
+            return { showDetail, musicTitle, bacCover, songName }
         },
-        props: [ 'playing' ]
+        props: [ 'playing' ],
+        computed: {
+            showTitleMarquee() {
+                return this.playing.name.length > 10
+            },
+            showSingerMarquee() {
+                return this.playing.ar.length > 4
+            }
+        },
+        components: {
+            Vue3Marquee,
+        }
     }
 </script>
 
@@ -77,7 +105,7 @@
         }
         .musicTitle{
             width: 100%;
-            height: 1rem;
+            height: 1.3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -94,12 +122,12 @@
                     // fill: #999;
                 }
                 .titleInfo {
-                    width: 100%;
+                    width: 80%;
                     height: 100%;
                     display: flex;
                     flex-direction: column;
                     justify-content: space-between;
-                    p {
+                    .songName {
                         width: 100%;
                         height: 60%;
                         font-size: .4rem;
@@ -113,10 +141,16 @@
                         align-items: center;
                         margin-top: .1rem;
                         margin-bottom: .2rem;
-                        span{
-                            font-size: 0.28rem;
-                            font-weight: 600;
-                            margin-right: 0.1rem;
+                        .singerList {
+                            display: -webkit-box;
+                            -webkit-line-clamp: 1;
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
+                            span{
+                                font-size: 0.28rem;
+                                font-weight: 600;
+                                margin-right: 0.1rem;
+                            }
                         }
                         .icon {
                             width: 0.28rem;

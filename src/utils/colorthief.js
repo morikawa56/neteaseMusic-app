@@ -3,8 +3,8 @@ import ColorThief from "colorthief/dist/color-thief.mjs"
 const colorthief = new ColorThief()
 
 const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
-const hex = x.toString(16)
-return hex.length === 1 ? '0' + hex : hex
+    const hex = x.toString(16)
+    return hex.length === 1 ? '0' + hex : hex
 }).join('')
 const Grayer = (r, g, b) => {
     let Gray = Math.floor((r + g + b) / 3)
@@ -26,6 +26,7 @@ export function changeTitleColor(bgimg, musicTitle, bacCover) {
 }
 
 export function changeTheme(bgImgUrl, musicTitle, bacCover) {
+    // 创建crossOrigin跨域img标签传入ColorThief.getColor函数防止报错
     const bgimg = new Image()
     bgimg.crossOrigin = ''
     bgimg.onload = () => {
