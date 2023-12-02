@@ -1,12 +1,13 @@
 <template>
     <div class="musicDetail">
         <img :src="playing.al.picUrl" class="bgimg">
-        <div class="musicTitle">
+        <div class="bacCover" ref="bacCover"></div>
+        <div class="musicTitle" ref="musicTitle">
             <div class="titleLeft">
                 <svg class="icon" aria-hidden="true" @click="showDetail">
                     <use xlink:href="#icon-mknetemsczuojiantou"></use>
                 </svg>
-                <div class="titleInfo">
+                <div class="titleInfo" ref="titleInfo">
                     <p>{{ playing.name }}</p>
                     <div class="singerInfo">
                         <span v-for="singer in playing.ar" :key="singer">
@@ -28,19 +29,30 @@
 </template>
 
 <script>
-    import { onMounted } from 'vue'
+    import { onActivated, onMounted, onUpdated, ref } from 'vue'
     import { useStore } from 'vuex'
+    import { changeTheme }  from '@/utils/colorthief'
     export default {
         name: 'MusicDetail',
         setup(props){
             const store = useStore();
+            let musicTitle = ref(null)
+            let bacCover = ref(null)
+
             onMounted(() => {
-                console.log(props.playing)
+                console.log('Mounted')
+                changeTheme(props.playing.al.picUrl, musicTitle.value, bacCover.value)
+            })
+
+            onUpdated(() => {
+                console.log('Updated')
+                changeTheme(props.playing.al.picUrl, musicTitle.value, bacCover.value)
             })
             function showDetail() {
                 store.commit('setMusicDetailShow')
             }
-            return { showDetail }
+
+            return { showDetail, musicTitle, bacCover}
         },
         props: [ 'playing' ]
     }
@@ -52,8 +64,16 @@
             width: 100%;
             height: 100%;
             position: fixed;
-            z-index: -1;
+            z-index: -2;
             filter: blur(.6rem);
+        }
+        .bacCover{
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            background-color: rgba(255, 255, 255, 0.3);
+            z-index: -1;
+            // filter: blur(.6rem);
         }
         .musicTitle{
             width: 100%;
@@ -71,7 +91,7 @@
                     width: 0.5rem;
                     height: 0.5rem;
                     margin: 0 .2rem;
-                    fill: #999;
+                    // fill: #999;
                 }
                 .titleInfo {
                     width: 100%;
@@ -101,7 +121,7 @@
                         .icon {
                             width: 0.28rem;
                             height: 0.28rem;
-                            fill: #999;
+                            // fill: #999;
                         }
                     }
                 }

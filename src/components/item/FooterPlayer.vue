@@ -43,6 +43,7 @@ export default {
         const audio = ref(null)
         const playBtn = ref(null)
         const playing = computed(() => store.state.playing)
+        
         onMounted(() =>{
             // console.log(audio.value)
             // console.log(playBtn.value.innerHTML)
