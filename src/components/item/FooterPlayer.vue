@@ -10,7 +10,8 @@
             </div>
             <div class="FooterPlayer-right">
                 <svg class="icon" aria-hidden="true" @click="togglePlay" ref="playBtn">
-                    <use xlink:href="#icon-mknetemscyunhang"></use>
+                    <use xlink:href="#icon-mknetemscyunhang" v-if="!playing"></use>
+                    <use xlink:href="#icon-mknetemscbofangzhong" v-if="playing"></use>
                 </svg>
                 <svg class="icon" aria-hidden="true" @click="handleList">
                     <use xlink:href="#icon-mknetemscbofangliebiao"></use>
@@ -26,55 +27,76 @@
                 position="bottom"
                 :style="{ width: '100%', height: '100%' }"
             >
-                <MusicDetail :playing="playList[playListIndex]" :playStatus="playing"/>
+                <MusicDetail 
+                    :playing="playList[playListIndex]" 
+                    :playStatus="playing" 
+                    :togglePlay="togglePlay" 
+                    :audio="audio" 
+                    :playList="playList"
+                />
             </van-popup>
         </div>
     </div>
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUpdated, ref } from 'vue'
 import { mapState, useStore } from 'vuex'
 import MusicDetail from '@/components/item/MusicDetail.vue'
 export default {
     name: 'FooterPlayer',
-    setup() {
+    setup(props) {
         const store = useStore();
         const audio = ref(null)
         const playBtn = ref(null)
         const playing = computed(() => store.state.playing)
-        
-        onMounted(() =>{
-            // console.log(audio.value)
-            // console.log(playBtn.value.innerHTML)
-            // console.log(store.state)
-            // console.log(playing)
-        })
+        const interval = ref(null)
+        // const progress = computed(() => {
+        //     if (audio.value) {
+        //         return audio.value.currentTime
+        //     } else {
+        //         return 0;
+        //     }
+        // });
 
+
+        onMounted(()=> {
+            audio.value.addEventListener('timeupdate', () => {
+                // console.log(audio.value.currentTime)
+                store.commit('updateCurrentTime', audio.value.currentTime)
+            });
+        })
 
         // watch(audio, (newValue, oldValue) => {
         //     handlePlay()
         //     console.log('audio的值变化了', newValue, oldValue)
         // })
-        function handleBtn(status) {
-            if(status) {
-                playBtn.value.innerHTML = '<use xlink:href="#icon-mknetemscbofangzhong"></use>'
-            } else {
-                playBtn.value.innerHTML = '<use xlink:href="#icon-mknetemscyunhang"></use>'
-            }
-        }
+        // function handleBtn(status, playbtn) {
+        //     if(status) {
+        //         playbtn.innerHTML = '<use xlink:href="#icon-mknetemscbofangzhong"></use>'
+        //     } else {
+        //         playbtn.innerHTML = '<use xlink:href="#icon-mknetemscyunhang"></use>'
+        //     }
+        // }
+
+        // 获取时间节流写法
+        // function updateTime() {
+        //     if(interval.value) clearInterval(interval.value)
+        //     interval.value = setInterval(()=>{
+        //         console.log(audio.value.currentTime)
+        //         store.commit('updateCurrentTime', audio.value.currentTime)
+        //     },250)
+        // }
 
         function handlePlay() {
             // 判断音乐是否播放
             if(!playing.value) {
-                // console.log(2)
-                handleBtn(false)
                 audio.value.pause()
+                // clearInterval(interval.value) 节流写法
             } else {
-                // console.log(1)
-                handleBtn(true)
                 audio.value.pause()
                 audio.value.play()
+                // updateTime() 获取时间节流写法
             }
             console.log(audio.value.src)
         }
@@ -93,26 +115,31 @@ export default {
             store,
             playing,
             handlePlay,
-            handleBtn,
             togglePlay,
-            showDetail
+            showDetail,
+            interval,
+            // updateTime
         }
     },
     methods: {
         handleList() {
             console.log('handleList')
-        }
+        },
     },
     watch: {
-        playListIndex() {
-            // console.log('playListIndex变化了', newValue, oldValue)
-            if(this.playList[this.playListIndex].id === Number(sessionStorage.getItem('lastMusicId'))) {
-                this.$refs.audio.play()
-            } else {
-                this.$refs.audio.autoplay = true
+        playListIndex: {
+            // immediate: true,
+            handler() {
+                // console.log('playListIndex变化了', newValue, oldValue)
+                if(this.playList[this.playListIndex].id === Number(sessionStorage.getItem('lastMusicId'))) {
+                    this.$refs.audio.play()
+                } else {
+                    this.$refs.audio.autoplay = true
+                }
+                // this.updateTime() 获取时间节流写法
+                sessionStorage.removeItem('lastMusicId')
+                this.$store.dispatch('getLyric', this.playList[this.playListIndex].id)
             }
-            this.handleBtn(this.playing)
-            sessionStorage.removeItem('lastMusicId')
         },
         playList() {
             if(this.playList[this.playListIndex].id === Number(sessionStorage.getItem('lastMusicId'))) {
@@ -120,14 +147,18 @@ export default {
             } else {
                 this.$refs.audio.autoplay = true
             }
-            this.handleBtn(this.playing)
+            this.$store.dispatch('getLyric', this.playList[this.playListIndex].id)
+            // this.updateTime() 获取时间节流写法
             sessionStorage.removeItem('lastMusicId')
         }
     },
     computed: {
         ...mapState(['playList', 'playListIndex', 'musicDetailShow'])
     },
-    components: { MusicDetail }
+    components: { MusicDetail },
+    mounted() {
+        this.$store.dispatch('getLyric', this.playList[this.playListIndex].id)
+    }
 }
 </script>
 

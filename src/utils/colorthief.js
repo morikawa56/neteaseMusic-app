@@ -11,30 +11,28 @@ const Grayer = (r, g, b) => {
     return Gray
 }
 
-export function changeTitleColor(bgimg, musicTitle, bacCover) {
+export function changeDetailColor(bgimg, bacCover) {
     let grayValue = Grayer(...colorthief.getColor(bgimg))
     let colorValue = rgbToHex(...colorthief.getColor(bgimg))
     if(grayValue >= 127 && grayValue <= 255) {
-        musicTitle.style.color = "#000000cf"
-        musicTitle.style.fill = "#000000cf"
         bacCover.style.backgroundColor = colorValue + '4d'
+        return false
     } else if (grayValue >= 0 && grayValue < 127) {
-        musicTitle.style.color = "#ffffffcf"
-        musicTitle.style.fill = "#ffffffcf"
         bacCover.style.backgroundColor = colorValue + '4d'
+        return true
     }
 }
 
-export function changeTheme(bgImgUrl, musicTitle, bacCover) {
+export function changeTheme(bgImgUrl, bacCover) {
     // 创建crossOrigin跨域img标签传入ColorThief.getColor函数防止报错
     const bgimg = new Image()
     bgimg.crossOrigin = ''
     bgimg.onload = () => {
-        changeTitleColor(bgimg, musicTitle, bacCover)
+        changeTitleColor(bgimg, bacCover)
         // console.log(colorthief.getPalette(bgimg))
     }
     bgimg.src = bgImgUrl
-    // console.log(musicTitle)
+    // console.log(musicDetail)
 }
 
 export default colorthief

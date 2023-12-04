@@ -7,4 +7,9 @@ export function getMusicListDetail(data) {
     })
 }
 
-
+export function getMusicLyric(data) {
+    return service({
+        method:'GET',
+        url: `/lyric?id=${data}`
+    })
+}
