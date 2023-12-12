@@ -87,7 +87,7 @@
                     <van-slider
                         v-model="progress"
                         bar-height="4px"
-                        active-color="#ee0a24"
+                        button-size="0.25rem"
                         :step="0.1"
                         @drag-end="changeProgress"
                     />
@@ -120,7 +120,7 @@
     import { useStore, mapState } from 'vuex'
     import { showToast } from 'vant'
     import { Vue3Marquee } from 'vue3-marquee'
-    import { changeDetailColor }  from '@/utils/colorthief'
+    import { changeDetailColor, progressBarColor }  from '@/utils/colorthief'
     export default {
         name: 'MusicDetail',
         setup(props){
@@ -143,6 +143,9 @@
                 bgimg.crossOrigin = ''
                 bgimg.onload = () => {
                     isLight.value = changeDetailColor(bgimg, bacCover.value)
+                    const root = document.documentElement;
+                    root.style.setProperty('--van-slider-active-background', progressBarColor(bgimg))
+                    root.style.setProperty('--van-slider-inactive-background', '#ebedf0da')
                 }
                 bgimg.src = props.playing.al.picUrl
                 if(currentTime.value < 5 && isLyricShow.value) {
@@ -239,6 +242,8 @@
                 bgimg.crossOrigin = ''
                 bgimg.onload = () => {
                     this.isLight = changeDetailColor(bgimg, this.$refs.bacCover)
+                    const root = document.documentElement;
+                    root.style.setProperty('--van-slider-active-background', progressBarColor(bgimg))
                     // console.log(colorthief.getPalette(bgimg))
                 }
                 bgimg.src = this.playing.al.picUrl
@@ -250,6 +255,8 @@
                 bgimg.crossOrigin = ''
                 bgimg.onload = () => {
                     this.isLight = changeDetailColor(bgimg, this.$refs.bacCover)
+                    const root = document.documentElement;
+                    root.style.setProperty('--van-slider-active-background', progressBarColor(bgimg))
                     // console.log(colorthief.getPalette(bgimg))
                 }
                 bgimg.src = this.playing.al.picUrl

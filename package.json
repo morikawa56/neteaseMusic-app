@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "colorify.js": "^1.0.3",
+    "colorsys": "^1.0.22",
     "colorthief": "^2.4.0",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
