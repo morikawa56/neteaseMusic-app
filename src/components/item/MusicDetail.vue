@@ -4,7 +4,7 @@
         <div class="bacCover" ref="bacCover"></div>
         <div class="musicTitle">
             <div class="titleLeft">
-                <svg class="icon" aria-hidden="true" @click="showDetail">
+                <svg class="icon" aria-hidden="true" @click="changeDetailShow">
                     <use xlink:href="#icon-mknetemsczuojiantou"></use>
                 </svg>
                 <div class="titleInfo" ref="titleInfo">
@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="alInfo">
-            <div class="alDisk" v-show="isLyricShow">
+            <div class="alDisk" v-show="!isLyricShow" @click="changeLyricShow(true)">
                 <img
                     src="@/assets/needle-ab.png"
                     alt=""
@@ -50,12 +50,18 @@
                     :src="playing.al.picUrl"
                     alt=""
                     class="img_al"
-                    @click="isLyricShow = true"
                     :class="{ img_al_active: playStatus, img_al_pauesd: !playStatus }"
                 />
             </div>
-            <div class="musicLyric" v-show="!isLyricShow" ref="musicLyric">
-                <p class="lyric" v-for="(item, index) in lyric" :key="index" :class="{active: /* currentTime < item.pre && currentTime > item.time */index === activeIndex}">{{ item.lrc }}</p>
+            <div class="musicLyric" v-show="isLyricShow" ref="musicLyric" @click="changeLyricShow(false)">
+                <p
+                    class="lyric"
+                    v-for="(item, index) in lyric"
+                    :key="index"
+                    :class="{active: /* currentTime < item.pre && currentTime > item.time */index === activeIndex}"
+                >
+                    {{ item.lrc }}
+                </p>
             </div>
         </div>
         <div class="playerBottom">
@@ -77,19 +83,27 @@
                 </svg>
             </div>
             <div class="playerFunction">
-                <div class="progressBar"></div>
+                <div class="progressBar">
+                    <van-slider
+                        v-model="progress"
+                        bar-height="4px"
+                        active-color="#ee0a24"
+                        :step="0.1"
+                        @drag-end="changeProgress"
+                    />
+                </div>
                 <div class="playerControl">
-                    <svg class="icon" aria-hidden="true">
+                    <svg class="icon" aria-hidden="true" @click="changeMode">
                         <use xlink:href="#icon-mknetemscliebiaoxunhuan"></use>
                     </svg>
-                    <svg class="icon" aria-hidden="true">
+                    <svg class="icon" aria-hidden="true" @click="changeMusic(-1)">
                         <use xlink:href="#icon-mknetemscshangyiqu"></use>
                     </svg>
                     <svg class="icon" aria-hidden="true" @click="togglePlay">
                         <use xlink:href="#icon-mknetemscyunhang" v-if="!playStatus"></use>
                         <use xlink:href="#icon-mknetemscbofangzhong" v-if="playStatus"></use>
                     </svg>
-                    <svg class="icon" aria-hidden="true">
+                    <svg class="icon" aria-hidden="true" @click="changeMusic(1)">
                         <use xlink:href="#icon-mknetemscxiayiqu"></use>
                     </svg>
                     <svg class="icon" aria-hidden="true">
@@ -104,6 +118,7 @@
 <script>
     import { computed, onMounted, ref } from 'vue'
     import { useStore, mapState } from 'vuex'
+    import { showToast } from 'vant'
     import { Vue3Marquee } from 'vue3-marquee'
     import { changeDetailColor }  from '@/utils/colorthief'
     export default {
@@ -114,8 +129,13 @@
             let bacCover = ref(null)
             const isLyricShow = ref(false)
             const currentTime = computed(() => store.state.currentTime)
+            const musicDetailShow = computed(() => store.state.musicDetailShow)
+            const musicLyricShowed = computed(() => store.state.musicLyricShowed)
             const isLight = ref(false)
             const musicLyric = ref(null)
+
+            const progress = ref(0);
+            const onChange = (value) => showToast('当前值：' + value)
 
             onMounted(() => {
                 // console.log('Mounted')
@@ -125,17 +145,57 @@
                     isLight.value = changeDetailColor(bgimg, bacCover.value)
                 }
                 bgimg.src = props.playing.al.picUrl
+                if(currentTime.value < 5 && isLyricShow.value) {
+                    store.commit('updateMusicLyricShowed', true)
+                    musicLyric.value.scrollTop = 0
+                }
+                props.audio.addEventListener('timeupdate',() => {
+                    progress.value = (currentTime.value / props.audio.duration) * 100
+                })
                 // console.log(props.playing.al.picUrl)
                 // console.log(lyricInfo)
             })
-            // const { lyricInfo, playListIndex, playlist } = {...mapState(['lyricInfo', 'playListIndex', 'playList'])}
-            function showDetail() {
+            // const { lyricInfo, playListIndex, playlist } = {...mapState(['lyricInfo', 'playListIndex', 'playList'])
+            function changeDetailShow() {
                 store.commit('setMusicDetailShow')
             }
+            function changeLyricShow(status) {
+                // console.log(status)
+                isLyricShow.value = status
+            }
 
-            return { showDetail, musicDetail, bacCover, isLyricShow, currentTime, isLight, musicLyric }
+            function changeMusic(indexOffset) {
+                store.commit('changeMusic', indexOffset)
+            }
+
+            function changeMode() {
+                console.log('Mode changed')
+            }
+
+            function changeProgress(e) {
+                console.log(e)
+                props.audio.currentTime = (progress.value / 100) * props.audio.duration
+
+            }
+
+            return {
+                changeDetailShow,
+                changeLyricShow,
+                changeMusic,
+                changeMode,
+                changeProgress,
+                musicDetail,
+                bacCover,
+                isLyricShow,
+                musicDetailShow,
+                musicLyricShowed,
+                currentTime,
+                isLight,
+                musicLyric,
+                progress,
+                onChange}
         },
-        props: [ 'playing', 'playStatus', 'togglePlay' ],
+        props: [ 'playing', 'playStatus', 'togglePlay', 'audio' ],
         computed: {
             showTitleMarquee() {
                 return this.playing.name.length > 10
@@ -144,7 +204,7 @@
                 return this.playing.ar.length > 4
             },
             ...mapState(['lyricInfo', 'playListIndex', 'playList']),
-            lyric: function() {
+            lyric() {
                 if(this.lyricInfo.lyric) {
                     let arr = this.lyricInfo.lyric.split(/[(\r\n)\r\n]+/).map((item, i)=>{
                         let min = item.slice(1, 3)
@@ -183,7 +243,7 @@
                     // console.log(colorthief.getPalette(bgimg))
                 }
                 bgimg.src = this.playing.al.picUrl
-                this.musicLyric.scrollTop = this.musicLyric.children[0].offsetTop
+                this.$store.commit('updateMusicLyricShowed', false)
                 // console.log(this.playing.al.picUrl)
             },
             playList() {
@@ -194,15 +254,52 @@
                     // console.log(colorthief.getPalette(bgimg))
                 }
                 bgimg.src = this.playing.al.picUrl
-                this.musicLyric.scrollTop = this.musicLyric.children[0].offsetTop
+                this.$store.commit('updateMusicLyricShowed', false)
             },
             activeIndex(index) {
-                if (index !== -1) {
+                if (this.musicDetailShow && this.isLyricShow && index !== -1) {
                     const line = this.musicLyric.children[index]
                     const offsetTop = line.offsetTop
                     const containerHeight = this.musicLyric.clientHeight
                     const lineHeight = line.clientHeight
                     this.musicLyric.scrollTop = offsetTop - (containerHeight / 2 - lineHeight / 2)
+                    // console.log(this.musicLyric.scrollTop)
+                }
+            },
+            musicDetailShow(newval) {
+                if(newval && this.isLyricShow) {
+                    if(this.musicLyricShowed === false && this.currentTime < 5) {
+                        this.musicLyric.scrollTop = 0
+                        this.$store.commit('updateMusicLyricShowed', true)
+                    }
+                    else {
+                        setTimeout(() => {
+                            const line = this.musicLyric.children[this.activeIndex]
+                            const offsetTop = line.offsetTop
+                            const containerHeight = this.musicLyric.clientHeight
+                            const lineHeight = line.clientHeight
+                            this.musicLyric.scrollTop = offsetTop - (containerHeight / 2 - lineHeight / 2)
+                            // console.log(this.musicLyric.scrollTop, line, offsetTop, containerHeight, lineHeight)
+                        },10)
+                    }
+                }
+            },
+            isLyricShow(newval) {
+                if(newval) {
+                    if(this.musicLyricShowed === false && this.currentTime < 5) {
+                        this.musicLyric.scrollTop = 0
+                        this.$store.commit('updateMusicLyricShowed', true)
+                    }
+                    else {
+                        setTimeout(() => {
+                            const line = this.musicLyric.children[this.activeIndex]
+                            const offsetTop = line.offsetTop
+                            const containerHeight = this.musicLyric.clientHeight
+                            const lineHeight = line.clientHeight
+                            this.musicLyric.scrollTop = offsetTop - (containerHeight / 2 - lineHeight / 2)
+                            console.log(this.musicLyric.scrollTop, line, offsetTop, containerHeight, lineHeight, this.activeIndex)
+                        },10)
+                    }
                 }
             }
         },
@@ -370,6 +467,7 @@
             .musicLyric {
                 width: 100%;
                 height: 70%;
+                padding: 0 .5rem;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -411,9 +509,16 @@
             .playerFunction {
                 width: 100%;
                 height: 2rem;
+                .progressBar {
+                    width: 100%;
+                    height: 20%;
+                    padding: 0 .2rem;
+                    display: flex;
+                    align-items: center;
+                }
                 .playerControl {
                     width: 100%;
-                    height: 100%;
+                    height: 80%;
                     display: flex;
                     justify-content: space-between;
                     align-items: center;

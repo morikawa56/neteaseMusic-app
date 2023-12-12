@@ -30,9 +30,8 @@
                 <MusicDetail 
                     :playing="playList[playListIndex]" 
                     :playStatus="playing" 
-                    :togglePlay="togglePlay" 
-                    :audio="audio" 
-                    :playList="playList"
+                    :togglePlay="togglePlay"
+                    :audio="audio"
                 />
             </van-popup>
         </div>
@@ -50,6 +49,7 @@ export default {
         const audio = ref(null)
         const playBtn = ref(null)
         const playing = computed(() => store.state.playing)
+        const volume = computed(() => store.state.volume)
         const interval = ref(null)
         // const progress = computed(() => {
         //     if (audio.value) {
@@ -65,7 +65,10 @@ export default {
                 // console.log(audio.value.currentTime)
                 store.commit('updateCurrentTime', audio.value.currentTime)
             })
-            audio.value.volume = 0.15
+            audio.value.addEventListener('ended', () => {
+                store.commit('changeMusic', 1)
+            })
+            audio.value.volume = volume.value
         })
 
         // watch(audio, (newValue, oldValue) => {
@@ -115,10 +118,10 @@ export default {
             playBtn,
             store,
             playing,
-            handlePlay,
             togglePlay,
             showDetail,
             interval,
+            volume
             // updateTime
         }
     },

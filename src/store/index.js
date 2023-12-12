@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { getMusicLyric } from '@/request/api/item'
+import {computed} from "vue";
 
 export default createStore({
   state: {
@@ -37,8 +38,10 @@ export default createStore({
     playListIndex:0,
     playing:false,
     musicDetailShow: false,
-    volume: 0.3,
+    musicLyricShowed: false,
+    volume: 0.15,
     currentTime: 0,
+    playMode: ['order', 'list_loop',  'single_loop', 'random'],
     lyricInfo: {
 
     }
@@ -67,6 +70,20 @@ export default createStore({
     },
     updateCurrentTime(state, time) {
       state.currentTime = time
+    },
+    updateMusicLyricShowed(state, isShowed) {
+      state.musicLyricShowed = isShowed
+    },
+    changeMusic(state, indexOffset) {
+      let playListIndex= state.playListIndex
+      let playList = state.playList
+      if(playListIndex + indexOffset > playList.length - 1 || playListIndex + indexOffset < 0) {
+        console.log('超出范围')
+      } else {
+        sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+        state.playListIndex= playListIndex + indexOffset
+        state.playing =  true
+      }
     }
   },
   actions: {
