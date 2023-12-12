@@ -173,7 +173,6 @@
             }
 
             function changeProgress(e) {
-                console.log(e)
                 props.audio.currentTime = (progress.value / 100) * props.audio.duration
 
             }
