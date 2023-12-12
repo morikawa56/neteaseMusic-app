@@ -54,8 +54,8 @@
                     :class="{ img_al_active: playStatus, img_al_pauesd: !playStatus }"
                 />
             </div>
-            <div class="musicLyric" v-show="!isLyricShow">
-                <p class="lyric" v-for="item, i in lyric" :key="i" :class="{active: currentTime < item.pre && currentTime > item.time}">{{ item.lrc }}</p>
+            <div class="musicLyric" v-show="!isLyricShow" ref="musicLyric">
+                <p class="lyric" v-for="(item, index) in lyric" :key="index" :class="{active: /* currentTime < item.pre && currentTime > item.time */index === activeIndex}">{{ item.lrc }}</p>
             </div>
         </div>
         <div class="playerBottom">
@@ -102,7 +102,7 @@
 </template>
 
 <script>
-    import { computed, onMounted, onUpdated, ref } from 'vue'
+    import { computed, onMounted, ref } from 'vue'
     import { useStore, mapState } from 'vuex'
     import { Vue3Marquee } from 'vue3-marquee'
     import { changeDetailColor }  from '@/utils/colorthief'
@@ -115,6 +115,7 @@
             const isLyricShow = ref(false)
             const currentTime = computed(() => store.state.currentTime)
             const isLight = ref(false)
+            const musicLyric = ref(null)
 
             onMounted(() => {
                 // console.log('Mounted')
@@ -125,13 +126,14 @@
                 }
                 bgimg.src = props.playing.al.picUrl
                 // console.log(props.playing.al.picUrl)
+                // console.log(lyricInfo)
             })
-            
+            // const { lyricInfo, playListIndex, playlist } = {...mapState(['lyricInfo', 'playListIndex', 'playList'])}
             function showDetail() {
                 store.commit('setMusicDetailShow')
             }
 
-            return { showDetail, musicDetail, bacCover, isLyricShow, currentTime, isLight }
+            return { showDetail, musicDetail, bacCover, isLyricShow, currentTime, isLight, musicLyric }
         },
         props: [ 'playing', 'playStatus', 'togglePlay' ],
         computed: {
@@ -162,6 +164,14 @@
                     // console.log(arr)
                     return arr
                 }
+            },
+            activeIndex() {
+                for(let i = this.lyric.length - 1; i >= 0; i--) {
+                    if(this.currentTime >= this.lyric[i].time) {
+                        return i;
+                    }
+                }
+                return -1
             }
         },
         watch:{
@@ -173,6 +183,7 @@
                     // console.log(colorthief.getPalette(bgimg))
                 }
                 bgimg.src = this.playing.al.picUrl
+                this.musicLyric.scrollTop = this.musicLyric.children[0].offsetTop
                 // console.log(this.playing.al.picUrl)
             },
             playList() {
@@ -183,6 +194,16 @@
                     // console.log(colorthief.getPalette(bgimg))
                 }
                 bgimg.src = this.playing.al.picUrl
+                this.musicLyric.scrollTop = this.musicLyric.children[0].offsetTop
+            },
+            activeIndex(index) {
+                if (index !== -1) {
+                    const line = this.musicLyric.children[index]
+                    const offsetTop = line.offsetTop
+                    const containerHeight = this.musicLyric.clientHeight
+                    const lineHeight = line.clientHeight
+                    this.musicLyric.scrollTop = offsetTop - (containerHeight / 2 - lineHeight / 2)
+                }
             }
         },
         components: {
@@ -362,6 +383,7 @@
                     text-align: center;
                     word-wrap: break-word; /* 超出容器范围自动换行 */
                     overflow-wrap: break-word; /* 兼容性更好的属性 */
+                    transition: all 0.5s ease;
                 }
                 p.lyric.active {
                     font-size: .5rem;

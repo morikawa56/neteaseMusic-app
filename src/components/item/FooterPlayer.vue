@@ -64,7 +64,8 @@ export default {
             audio.value.addEventListener('timeupdate', () => {
                 // console.log(audio.value.currentTime)
                 store.commit('updateCurrentTime', audio.value.currentTime)
-            });
+            })
+            audio.value.volume = 0.15
         })
 
         // watch(audio, (newValue, oldValue) => {
