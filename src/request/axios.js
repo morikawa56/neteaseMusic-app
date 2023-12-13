@@ -1,6 +1,6 @@
 import axios from "axios"
 
 export default axios.create({
-    baseURL: 'http://192.168.129.164:3000',
+    baseURL: 'https://ncm.kimisui56.work',
     timeout:3000,
 })
