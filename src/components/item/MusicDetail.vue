@@ -337,7 +337,7 @@
         }
         .musicTitle{
             width: 100%;
-            height: 1.3rem;
+            height: 1.4rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -361,13 +361,14 @@
                     justify-content: space-between;
                     .songName {
                         width: 100%;
-                        height: 65%;
+                        height: 70%;
                         font-size: .4rem;
                         margin-top: .2rem;
+                        overflow: hidden;
                     }
                     .singerInfo{
                         width: 100%;
-                        height: 40%;
+                        height: 30%;
                         display: flex;
                         justify-content: flex-start;
                         align-items: center;

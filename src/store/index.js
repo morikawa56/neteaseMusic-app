@@ -1,6 +1,5 @@
 import { createStore } from 'vuex'
 import { getMusicLyric } from '@/request/api/item'
-import {computed} from "vue";
 
 export default createStore({
   state: {
@@ -42,6 +41,9 @@ export default createStore({
     volume: 0.15,
     currentTime: 0,
     playMode: ['order', 'list_loop',  'single_loop', 'random'],
+    playModeIndex: 1,
+    randomPlayList: [],
+    randomPlayListIndex: 0,
     lyricInfo: {
 
     }

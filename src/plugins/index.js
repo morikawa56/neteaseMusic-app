@@ -1,6 +1,6 @@
-import { Swipe, SwipeItem, Button, Popup, Slider, ConfigProvider } from 'vant'
+import { Swipe, SwipeItem, Button, Popup, Slider, ConfigProvider, Search } from 'vant'
 
-let plugins = [ Swipe, SwipeItem, Button, Popup, Slider, ConfigProvider ]
+let plugins = [ Swipe, SwipeItem, Button, Popup, Slider, ConfigProvider, Search ]
 
 export default function(app) {
     plugins.forEach((item)=>{

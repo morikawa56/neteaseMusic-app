@@ -98,7 +98,7 @@ export function changeTheme(bgImgUrl, bacCover) {
 export function progressBarColor(bgimg) {
     let activeColorValue = deepenPurity(colorthief.getColor(bgimg),30)
     // console.log(colorthief.getColor(bgimg), activeColorValue, barColorValue)
-    console.log(activeColorValue, rgbToHex(activeColorValue.r,activeColorValue.g,activeColorValue.b))
+    // console.log(activeColorValue, rgbToHex(activeColorValue.r,activeColorValue.g,activeColorValue.b))
     return rgbToHex(activeColorValue.r,activeColorValue.g,activeColorValue.b)
 }
 export default colorthief
