@@ -178,7 +178,6 @@ export default {
             } else {
                 this.$refs.audio.removeEventListener('ended', this.ModeSL)
                 this.$refs.audio.addEventListener('ended', this.endedChange)
-
             }
         }
     },

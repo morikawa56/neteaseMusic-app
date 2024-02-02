@@ -84,6 +84,10 @@ export default createStore({
         state.playModeIndex = playModeIndex + indexOffset
       }
     },
+    resetRandomPlayList(state) {
+      state.randomPlayList = []
+      state.randomPlayListIndex = 0
+    },
     changeMusic(state, info) {
       console.log(state.playListIndex)
       let playListIndex= state.playListIndex
@@ -134,17 +138,17 @@ export default createStore({
         let randomPlayListIndex = state.randomPlayListIndex
         let randomPlayList = state.randomPlayList
         if(randomPlayListIndex <= 30) {
-          if(randomPlayList[randomPlayListIndex] !== undefined) {
-            sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
-            state.playListIndex = randomPlayList[randomPlayListIndex]
-            state.randomPlayListIndex = randomPlayListIndex + indexOffset
-            console.log('未创建新的随机索引')
-          } else {
+          if(typeof randomPlayList[randomPlayListIndex + indexOffset] === "undefined") {
             sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
             state.playListIndex = Math.floor(Math.random() * playList.length)
-            randomPlayList[randomPlayListIndex] = state.playListIndex
-            console.log('创建了新的随机索引', state.randomPlayList[state.randomPlayListIndex])
+            randomPlayList[randomPlayListIndex + indexOffset] = state.playListIndex
+            console.log('创建了新的随机索引', state.randomPlayListIndex, state.randomPlayList[state.randomPlayListIndex])
             state.randomPlayListIndex = randomPlayListIndex + indexOffset
+          } else {
+            sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+            state.playListIndex = randomPlayList[randomPlayListIndex + indexOffset]
+            state.randomPlayListIndex = randomPlayListIndex + indexOffset
+            console.log('未创建新的随机索引', state.randomPlayListIndex)
           }
         }
       }

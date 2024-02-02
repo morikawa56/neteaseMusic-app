@@ -50,12 +50,14 @@
 </template>
 
 <script>
-import { onMounted, reactive } from 'vue'
+    import { computed } from 'vue'
     import { useStore } from 'vuex'
     export default {
         name: 'ItemMusicList',
         setup(props) {
             const store = useStore()
+            const playModeIndex = computed(() => store.state.playModeIndex)
+            const playMode = computed(() => store.state.playMode)
             // console.log(props)
             const changeCount = num => {
                 if(num >= 100000000) {
@@ -71,8 +73,11 @@ import { onMounted, reactive } from 'vue'
                 store.commit('updatePlayList', props.songs)
                 store.commit('updatePlayIndex', Index)
                 store.commit('setPlaying', true)
+                if(playMode.value[playModeIndex.value] === 'random') {
+                    store.commit('resetRandomPlayList')
+                }
             }
-            return { changeCount, playMusic }
+            return { changeCount, playMusic, playModeIndex, playMode }
         },
         props: ['songs', 'playlist']
     }
