@@ -94,7 +94,10 @@
                 </div>
                 <div class="playerControl">
                     <svg class="icon" aria-hidden="true" @click="changeMode">
-                        <use xlink:href="#icon-mknetemscliebiaoxunhuan"></use>
+                        <use xlink:href="#icon-mknetemscshunxubofang" v-if="playMode[playModeIndex] === 'order'"></use>
+                        <use xlink:href="#icon-mknetemscliebiaoxunhuan" v-if="playMode[playModeIndex] === 'list_loop'"></use>
+                        <use xlink:href="#icon-mknetemscdanquxunhuan" v-if="playMode[playModeIndex] === 'single_loop'"></use>
+                        <use xlink:href="#icon-mknetemscsuijibofang" v-if="playMode[playModeIndex] === 'random'"></use>
                     </svg>
                     <svg class="icon" aria-hidden="true" @click="changeMusic(-1)">
                         <use xlink:href="#icon-mknetemscshangyiqu"></use>
@@ -133,6 +136,8 @@
             const musicLyricShowed = computed(() => store.state.musicLyricShowed)
             const isLight = ref(false)
             const musicLyric = ref(null)
+            const playModeIndex = computed(() => store.state.playModeIndex)
+            const playMode = computed(() => store.state.playMode)
 
             const progress = ref(0);
             const onChange = (value) => showToast('当前值：' + value)
@@ -168,13 +173,13 @@
             }
 
             function changeMusic(indexOffset) {
-                store.commit('changeMusic', indexOffset)
+                store.commit('changeMusic', {indexOffset: indexOffset, trigger: 'buttonChanged'})
             }
 
             function changeMode() {
+                store.commit('updatePlayMode', 1)
                 console.log('Mode changed')
             }
-
             function changeProgress(e) {
                 props.audio.currentTime = (progress.value / 100) * props.audio.duration
 
@@ -194,6 +199,8 @@
                 currentTime,
                 isLight,
                 musicLyric,
+                playModeIndex,
+                playMode,
                 progress,
                 onChange}
         },

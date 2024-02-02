@@ -51,6 +51,8 @@ export default {
         const playing = computed(() => store.state.playing)
         const volume = computed(() => store.state.volume)
         const interval = ref(null)
+        const playModeIndex = computed(() => store.state.playModeIndex)
+        const playMode = computed(() => store.state.playMode)
         // const progress = computed(() => {
         //     if (audio.value) {
         //         return audio.value.currentTime
@@ -58,16 +60,26 @@ export default {
         //         return 0;
         //     }
         // });
-
+        
+        function endedChange() {
+            store.commit('changeMusic', {indexOffset: 1, trigger: 'ended'})
+        }
+        function ModeSL() {
+            store.commit('changeMusic', {indexOffset: 0, trigger: 'ended'})
+            audio.value.currentTime = 0
+            audio.value.play()
+        }
 
         onMounted(()=> {
             audio.value.addEventListener('timeupdate', () => {
                 // console.log(audio.value.currentTime)
                 store.commit('updateCurrentTime', audio.value.currentTime)
             })
-            audio.value.addEventListener('ended', () => {
-                store.commit('changeMusic', 1)
-            })
+            if(playModeIndex === 2) {
+                audio.value.addEventListener('ended', ModeSL)
+            } else {
+                audio.value.addEventListener('ended', endedChange)
+            }
             audio.value.volume = volume.value
         })
 
@@ -121,7 +133,11 @@ export default {
             togglePlay,
             showDetail,
             interval,
-            volume
+            volume,
+            playMode,
+            playModeIndex,
+            endedChange,
+            ModeSL
             // updateTime
         }
     },
@@ -154,6 +170,16 @@ export default {
             this.$store.dispatch('getLyric', this.playList[this.playListIndex].id)
             // this.updateTime() 获取时间节流写法
             sessionStorage.removeItem('lastMusicId')
+        },
+        playModeIndex(newValue) {
+            if(newValue === 2) {
+                this.$refs.audio.removeEventListener('ended', this.endedChange)
+                this.$refs.audio.addEventListener('ended', this.ModeSL)
+            } else {
+                this.$refs.audio.removeEventListener('ended', this.ModeSL)
+                this.$refs.audio.addEventListener('ended', this.endedChange)
+
+            }
         }
     },
     computed: {

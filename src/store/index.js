@@ -76,16 +76,79 @@ export default createStore({
     updateMusicLyricShowed(state, isShowed) {
       state.musicLyricShowed = isShowed
     },
-    changeMusic(state, indexOffset) {
+    updatePlayMode(state, indexOffset) {
+      let playModeIndex = state.playModeIndex
+      if(state.playModeIndex + indexOffset > 3) {
+        state.playModeIndex = 0
+      } else {
+        state.playModeIndex = playModeIndex + indexOffset
+      }
+    },
+    changeMusic(state, info) {
+      console.log(state.playListIndex)
       let playListIndex= state.playListIndex
       let playList = state.playList
-      if(playListIndex + indexOffset > playList.length - 1 || playListIndex + indexOffset < 0) {
-        console.log('超出范围')
-      } else {
-        sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
-        state.playListIndex= playListIndex + indexOffset
-        state.playing =  true
+      let playMode = state.playMode
+      let playModeIndex = state.playModeIndex
+      let indexOffset = info.indexOffset
+      let trigger = info.trigger
+      if(playMode[playModeIndex] === 'order') {
+        if(playListIndex + indexOffset > playList.length - 1 || playListIndex + indexOffset < 0) {
+          console.log('超出范围')
+        } else {
+          sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+          state.playListIndex= playListIndex + indexOffset
+        }
+      }else if(playMode[playModeIndex] === 'list_loop') {
+        if(playListIndex + indexOffset > playList.length - 1 || playListIndex + indexOffset < 0) {
+          if(playListIndex + indexOffset > playList.length - 1) {
+            sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+            state.playListIndex = 0
+          } else if(playListIndex + indexOffset < 0){
+            sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+            state.playListIndex = playList.length - 1
+          }
+        } else {
+          sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+          state.playListIndex= playListIndex + indexOffset
+        }
+      } else if(playMode[playModeIndex] === 'single_loop') {
+        if(trigger === 'ended') {
+          sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+          state.playListIndex = playListIndex
+        } else {
+          if(playListIndex + indexOffset > playList.length - 1 || playListIndex + indexOffset < 0) {
+            if(playListIndex + indexOffset > playList.length - 1) {
+              sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+              state.playListIndex = 0
+            } else if(playListIndex + indexOffset < 0){
+              sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+              state.playListIndex = playList.length - 1
+            }
+          } else {
+            sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+            state.playListIndex= playListIndex + indexOffset
+          }
+        }
+      } else if(playMode[playModeIndex] === 'random') {
+        let randomPlayListIndex = state.randomPlayListIndex
+        let randomPlayList = state.randomPlayList
+        if(randomPlayListIndex <= 30) {
+          if(randomPlayList[randomPlayListIndex] !== undefined) {
+            sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+            state.playListIndex = randomPlayList[randomPlayListIndex]
+            state.randomPlayListIndex = randomPlayListIndex + indexOffset
+            console.log('未创建新的随机索引')
+          } else {
+            sessionStorage.setItem('lastMusicId', state.playList[state.playListIndex].id)
+            state.playListIndex = Math.floor(Math.random() * playList.length)
+            randomPlayList[randomPlayListIndex] = state.playListIndex
+            console.log('创建了新的随机索引', state.randomPlayList[state.randomPlayListIndex])
+            state.randomPlayListIndex = randomPlayListIndex + indexOffset
+          }
+        }
       }
+      state.playing = true
     }
   },
   actions: {

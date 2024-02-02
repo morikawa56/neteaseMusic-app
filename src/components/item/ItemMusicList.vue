@@ -19,13 +19,13 @@
         </div>
     </div>
     <div class="musicList">
-        <div v-for="item in songs" class="musicItem">
+        <div v-for="item in songs" :key="item" class="musicItem">
             <div class="itemLeft" @click="playMusic(songs.indexOf(item))">
                 <span class="musicIndex">{{ songs.indexOf(item) + 1 }}</span>
                 <div class="musicInfo">
                     <span class="musicTitle">{{ item.name }}</span>
                     <div class="singerInfo">
-                        <span v-for="singer in item.ar">
+                        <span v-for="singer in item.ar" :key="singer">
                             {{ singer.name }}
                         </span>
                     </div>
