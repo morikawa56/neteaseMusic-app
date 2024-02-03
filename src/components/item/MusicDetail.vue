@@ -177,8 +177,8 @@
             }
 
             function changeMode() {
-                store.commit('updatePlayMode', 1)
-                console.log('Mode changed')
+                store.commit('updatePlayMode')
+                console.log('Mode changed', playMode.value[playModeIndex.value])
             }
             function changeProgress(e) {
                 props.audio.currentTime = (progress.value / 100) * props.audio.duration
@@ -286,7 +286,7 @@
                         this.$store.commit('updateMusicLyricShowed', true)
                     }
                     else {
-                        setTimeout(() => {
+                        this.lyricTimeout = setTimeout(() => {
                             const line = this.musicLyric.children[this.activeIndex]
                             const offsetTop = line.offsetTop
                             const containerHeight = this.musicLyric.clientHeight
@@ -296,6 +296,9 @@
                         },10)
                     }
                 }
+                else {
+                    clearTimeout(this.lyricTimeout)
+                }
             },
             isLyricShow(newval) {
                 if(newval) {
@@ -304,15 +307,18 @@
                         this.$store.commit('updateMusicLyricShowed', true)
                     }
                     else {
-                        setTimeout(() => {
+                        this.lyricTimeout = setTimeout(() => {
                             const line = this.musicLyric.children[this.activeIndex]
                             const offsetTop = line.offsetTop
                             const containerHeight = this.musicLyric.clientHeight
                             const lineHeight = line.clientHeight
                             this.musicLyric.scrollTop = offsetTop - (containerHeight / 2 - lineHeight / 2)
-                            console.log(this.musicLyric.scrollTop, line, offsetTop, containerHeight, lineHeight, this.activeIndex)
+                            // console.log(this.musicLyric.scrollTop, line, offsetTop, containerHeight, lineHeight, this.activeIndex)
                         },10)
                     }
+                }
+                else {
+                    clearTimeout(this.lyricTimeout)
                 }
             }
         },

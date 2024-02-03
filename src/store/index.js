@@ -76,12 +76,12 @@ export default createStore({
     updateMusicLyricShowed(state, isShowed) {
       state.musicLyricShowed = isShowed
     },
-    updatePlayMode(state, indexOffset) {
+    updatePlayMode(state) {
       let playModeIndex = state.playModeIndex
-      if(state.playModeIndex + indexOffset > 3) {
+      if(state.playModeIndex + 1 > 3) {
         state.playModeIndex = 0
       } else {
-        state.playModeIndex = playModeIndex + indexOffset
+        state.playModeIndex = ++playModeIndex
       }
     },
     resetRandomPlayList(state) {
