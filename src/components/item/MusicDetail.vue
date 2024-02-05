@@ -66,19 +66,19 @@
         </div>
         <div class="playerBottom">
             <div class="playerTop">
-                <svg class="icon" aria-hidden="true">
+                <svg class="icon" aria-hidden="true" @click="favoriteChange">
                     <use xlink:href="#icon-mknetemscshoucang"></use>
                 </svg>
-                <svg class="icon" aria-hidden="true">
+                <svg class="icon" aria-hidden="true" @click="downloadMusic">
                     <use xlink:href="#icon-mknetemscxiazai"></use>
                 </svg>
-                <svg class="icon" aria-hidden="true">
+                <svg class="icon" aria-hidden="true" @click="changeMusicQuality">
                     <use xlink:href="#icon-mknetemscyinlechangpian"></use>
                 </svg>
-                <svg class="icon" aria-hidden="true">
+                <svg class="icon" aria-hidden="true" @click="showComment">
                     <use xlink:href="#icon-mknetemscpinglun"></use>
                 </svg>
-                <svg class="icon" aria-hidden="true">
+                <svg class="icon" aria-hidden="true" @click="moreFunction">
                     <use xlink:href="#icon-mknetemsc31liebiao"></use>
                 </svg>
             </div>
@@ -109,7 +109,7 @@
                     <svg class="icon" aria-hidden="true" @click="changeMusic(1)">
                         <use xlink:href="#icon-mknetemscxiayiqu"></use>
                     </svg>
-                    <svg class="icon" aria-hidden="true">
+                    <svg class="icon" aria-hidden="true" @click="showPlayingList">
                         <use xlink:href="#icon-mknetemscbofangduilie"></use>
                     </svg>
                 </div>
@@ -143,7 +143,6 @@
             const onChange = (value) => showToast('当前值：' + value)
 
             onMounted(() => {
-                // console.log('Mounted')
                 const bgimg = new Image()
                 bgimg.crossOrigin = ''
                 bgimg.onload = () => {
@@ -160,29 +159,45 @@
                 props.audio.addEventListener('timeupdate',() => {
                     progress.value = (currentTime.value / props.audio.duration) * 100
                 })
-                // console.log(props.playing.al.picUrl)
-                // console.log(lyricInfo)
+                console.log(props.playing)
             })
-            // const { lyricInfo, playListIndex, playlist } = {...mapState(['lyricInfo', 'playListIndex', 'playList'])
             function changeDetailShow() {
                 store.commit('setMusicDetailShow')
             }
             function changeLyricShow(status) {
-                // console.log(status)
                 isLyricShow.value = status
             }
-
+            function changeProgress() {
+                props.audio.currentTime = (progress.value / 100) * props.audio.duration
+            }
             function changeMusic(indexOffset) {
                 store.commit('changeMusic', {indexOffset: indexOffset, trigger: 'buttonChanged'})
+                props.audio.currentTime = currentTime.value
             }
-
             function changeMode() {
                 store.commit('updatePlayMode')
+                if(playMode.value[playModeIndex.value] === 'random') {
+                    store.commit('resetRandomPlayList')
+                }
                 console.log('Mode changed', playMode.value[playModeIndex.value])
             }
-            function changeProgress(e) {
-                props.audio.currentTime = (progress.value / 100) * props.audio.duration
-
+            function favoriteChange() {
+                console.log('Favorite changed')
+            }
+            function downloadMusic() {
+                console.log('Download music')
+            }
+            function changeMusicQuality() {
+                console.log('Change music quality')
+            }
+            function showComment() {
+                console.log('Show comment')
+            }
+            function moreFunction() {
+                console.log('More function')
+            }
+            function showPlayingList() {
+                console.log('Show playing list')
             }
 
             return {
@@ -202,7 +217,14 @@
                 playModeIndex,
                 playMode,
                 progress,
-                onChange}
+                onChange,
+                favoriteChange,
+                downloadMusic,
+                changeMusicQuality,
+                showComment,
+                moreFunction,
+                showPlayingList
+                }
         },
         props: [ 'playing', 'playStatus', 'togglePlay', 'audio' ],
         computed: {

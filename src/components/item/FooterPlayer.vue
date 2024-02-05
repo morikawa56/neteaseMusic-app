@@ -42,6 +42,7 @@
 import { computed, onMounted, onUpdated, ref } from 'vue'
 import { mapState, useStore } from 'vuex'
 import MusicDetail from '@/components/item/MusicDetail.vue'
+import { stringify } from 'colorsys'
 export default {
     name: 'FooterPlayer',
     setup(props) {
@@ -53,6 +54,7 @@ export default {
         const interval = ref(null)
         const playModeIndex = computed(() => store.state.playModeIndex)
         const playMode = computed(() => store.state.playMode)
+        const currentTime = computed(() => store.state.currentTime)
         // const progress = computed(() => {
         //     if (audio.value) {
         //         return audio.value.currentTime
@@ -63,11 +65,35 @@ export default {
         
         function endedChange() {
             store.commit('changeMusic', {indexOffset: 1, trigger: 'ended'})
+            audio.value.currentTime = currentTime.value
+            try {
+                if(playing.value) {
+                audio.value.pause()
+                // clearInterval(interval.value) 节流写法
+            } else {
+                audio.value.pause()
+                audio.value.play()
+                // updateTime() 获取时间节流写法
+            }
+            } catch (error) {
+                console.log(stringify(error))
+            }
         }
         function ModeSL() {
             store.commit('changeMusic', {indexOffset: 0, trigger: 'ended'})
-            audio.value.currentTime = 0
-            audio.value.play()
+            audio.value.currentTime = currentTime.value
+            try {
+                if(playing.value) {
+                audio.value.pause()
+                // clearInterval(interval.value) 节流写法
+            } else {
+                audio.value.pause()
+                audio.value.play()
+                // updateTime() 获取时间节流写法
+            }
+            } catch (error) {
+                console.log(stringify(error))
+            }
         }
 
         onMounted(()=> {
@@ -103,7 +129,9 @@ export default {
         //         store.commit('updateCurrentTime', audio.value.currentTime)
         //     },250)
         // }
-
+        function changeProgress() {
+            audio.value.currentTime = (progress.value / 100) * props.audio.duration
+        }
         function handlePlay() {
             // 判断音乐是否播放
             if(!playing.value) {
@@ -114,7 +142,7 @@ export default {
                 audio.value.play()
                 // updateTime() 获取时间节流写法
             }
-            console.log(audio.value.src)
+            // console.log(audio.value.src)
         }
         function togglePlay() {
             store.commit('setPlaying', !playing.value)
@@ -137,7 +165,8 @@ export default {
             playMode,
             playModeIndex,
             endedChange,
-            ModeSL
+            ModeSL,
+            currentTime
             // updateTime
         }
     },
