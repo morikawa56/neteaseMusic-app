@@ -69,7 +69,6 @@ export default {
             try {
                 if(playing.value) {
                 audio.value.pause()
-                // clearInterval(interval.value) 节流写法
             } else {
                 audio.value.pause()
                 audio.value.play()
@@ -85,11 +84,9 @@ export default {
             try {
                 if(playing.value) {
                 audio.value.pause()
-                // clearInterval(interval.value) 节流写法
             } else {
                 audio.value.pause()
                 audio.value.play()
-                // updateTime() 获取时间节流写法
             }
             } catch (error) {
                 console.log(stringify(error))
