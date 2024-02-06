@@ -82,12 +82,7 @@ export default {
             store.commit('changeMusic', {indexOffset: 0, trigger: 'ended'})
             audio.value.currentTime = currentTime.value
             try {
-                if(playing.value) {
-                audio.value.pause()
-            } else {
-                audio.value.pause()
                 audio.value.play()
-            }
             } catch (error) {
                 console.log(stringify(error))
             }

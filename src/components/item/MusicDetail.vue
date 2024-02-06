@@ -236,6 +236,7 @@
             },
             ...mapState(['lyricInfo', 'playListIndex', 'playList']),
             lyric() {
+                // console.log(this.lyricInfo.lyric)
                 if(this.lyricInfo.lyric) {
                     let arr = this.lyricInfo.lyric.split(/[(\r\n)\r\n]+/).map((item, i)=>{
                         let min = item.slice(1, 3)
@@ -252,7 +253,7 @@
                             item.pre = arr[i + 1].time
                         }
                     }); //循环获取下一句歌词
-                    // console.log(arr)
+                    console.log(arr)
                     return arr
                 }
             },
